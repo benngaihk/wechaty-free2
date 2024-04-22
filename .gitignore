@@ -126,3 +126,4 @@ dist
 .yarn/install-state.gz
 .pnp.*
 chat-bot.memory-card.json
+chat-bot.memory-card.json

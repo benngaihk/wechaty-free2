@@ -4,9 +4,7 @@ import qrcodeTerminal from 'qrcode-terminal'
 import { spawn } from 'child_process';
 import { FileBox } from "file-box";
 import * as fs from 'fs';
-
-const IMAGE_PATH = 'D:\\psco_projects\\wechaty-free\\image\\';
-const OCR_PATH = 'D:\\psco_projects\\ocr.py';
+import { IMAGE_PATH,OCR_PATH,PY_CMD } from './constants.js';
 
 const bot = WechatyBuilder.build({
   name: 'chat-bot',
@@ -54,7 +52,7 @@ async function onMessage(message) {
     
             console.log(`saved, ${fileName}`);
     
-            const pythonProcess = spawn('py', [OCR_PATH, fileName]);
+            const pythonProcess = spawn(PY_CMD, [OCR_PATH, fileName]);
     
             pythonProcess.stdout.on('data', (data) => {
               if(data.indexOf("[") == 0){
