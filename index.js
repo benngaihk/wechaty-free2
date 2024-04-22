@@ -42,7 +42,8 @@ async function onMessage(message) {
     {
         let roomId = message.room().id;
         let roomTopic = await message.room().topic();
-        let userName = message.talker().name;
+        let talkerId = message.talker().id;
+        let talkerName = message.talker().name();
 
         if(message.type() == bot.Message.Type.Image)
         {
@@ -65,7 +66,7 @@ async function onMessage(message) {
                 let containsTime = containsTimeInfo(ocrResults);
                 console.log("containsTime:",containsTime);
                 if(containsTime) {
-                  loadMessage(roomId, roomTopic, message.talker().id, message.talker().name(), "图片打卡", bot.Message.Type.Text)
+                  loadMessage(roomId, roomTopic, talkerId, talkerName, "图片打卡", bot.Message.Type.Text)
                     .then((data) => {
                       if(typeof data != 'undefined' && data != null)
                       {
