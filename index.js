@@ -140,6 +140,20 @@ async function onMessage(message) {
   
 bot.on('message', onMessage)
 
+async function onHeartbeat() {
+  const now = new Date();
+  // 检查当前时间是否是12点
+  if (now.getMinutes() === 0) {
+    checkAlive();
+  }
+}
+bot.on('heartbeat', onHeartbeat)
+
+async function checkAlive() {
+  const room = await bot.Room.find({topic: 'test bot'})
+  await room.say('alive:'+new Date());
+}
+
 async function loadMessage(groupId, groupName, userId, userName, message, messageType) {
     console.log("loadMessage");
 
@@ -164,19 +178,21 @@ async function loadMessage(groupId, groupName, userId, userName, message, messag
     });
 }
   
-  export function containsTimeInfo(strList) {
-    // 定义时间信息的正则表达式
-    // const timeRegex = /\d{1,2}[年月日时分]/;
-    const timeRegex = /(\d+小时\d+分钟|\d+分钟|\d+:\d+(:\d+)?)/g;
-  
-    // 遍历字符串列表
-    for (const str of strList) {
-      // 使用正则表达式检查字符串是否包含时间信息
-      if (timeRegex.test(str)) {
-        return true;
-      }
+export function containsTimeInfo(strList) {
+  // 定义时间信息的正则表达式
+  // const timeRegex = /\d{1,2}[年月日时分]/;
+  const timeRegex = /(\d+小时\d+分钟|\d+分钟|\d+:\d+(:\d+)?)/g;
+
+  // 遍历字符串列表
+  for (const str of strList) {
+    // 使用正则表达式检查字符串是否包含时间信息
+    if (timeRegex.test(str)) {
+      return true;
     }
-  
-    // 如果列表中没有包含时间信息的字符串，返回 false
-    return false;
-  } 
+  }
+
+  // 如果列表中没有包含时间信息的字符串，返回 false
+  return false;
+} 
+
+
