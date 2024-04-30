@@ -152,6 +152,31 @@ async function onMessage(message) {
             log.info('error', error);
           });
         }
+    } else {
+      let talkerId = message.talker().id;
+      let talkerName = message.talker().name();
+      if(message.type() == bot.Message.Type.Text) {
+        talkToAI(message.talker().id, message.talker().name(), message.text(), message.type())
+          .then((data) => {
+            if(typeof data != 'undefined' && data != null)
+            {
+              if(data.type == "TXT")
+              {
+                message.room().say(data.content);
+              }
+              else if(data.type == "IMG")
+              {
+                const imageFilePath = data.content;
+                const fileBox = FileBox.fromFile(imageFilePath);
+                message.room().say(fileBox);
+              }
+            }
+          })
+          .catch((error) => {
+            log.info('error', error);
+          });
+      }
+
     }
 }
   
@@ -192,6 +217,28 @@ async function loadMessage(groupId, groupName, userId, userName, message, messag
         log.info('error', error);
         throw error;
     });
+}
+
+async function talkToAI(userId, userName, message, messageType) {
+  console.log("talkToAI");
+
+  return axios.post('http://localhost:9091/checkin/talk', {
+      user_id: userId,
+      user_name: userName,
+      message: message,
+      message_type: messageType,
+  })
+  .then((response) => {
+      const { code, message, data } = response.data
+      console.log('code:', code);
+      console.log('message:', message);
+      console.log('data:', data);
+      return data;
+  })
+  .catch((error) => {
+      log.info('error', error);
+      throw error;
+  });
 }
   
 export function containsTimeInfo(strList) {
