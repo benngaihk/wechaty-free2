@@ -4,7 +4,7 @@ import qrcodeTerminal from 'qrcode-terminal'
 import { spawn } from 'child_process';
 import { FileBox } from "file-box";
 import * as fs from 'fs';
-import { IMAGE_PATH,OCR_PATH,PY_CMD } from './constants.js';
+import { IMAGE_PATH,OCR_PATH,PY_CMD,AUDIO_PATH } from './constants.js';
 
 const bot = WechatyBuilder.build({
   name: 'chat-bot',
@@ -113,6 +113,22 @@ async function onMessage(message) {
           }
 
         }
+        // else if(message.text() == '1') {
+
+        //   // const fileBox = await message.toFileBox();
+        //   // const fileName = AUDIO_PATH + fileBox.name;
+        //   // await fileBox.toFile(fileName, true);
+    
+        //   // console.log(`saved, ${fileName}`);
+
+        //   const new_audio_file = FileBox.fromFile("D:\\psco_projects\\wechaty-free\\output.silk")
+        //   new_audio_file.mimeType = 'audio/silk'
+        //   new_audio_file.metadata = {
+        //       "voiceLength":3000
+        //   }
+        //   message.room().say(new_audio_file)
+              
+        // }
         else
         {
           loadMessage(roomId, roomTopic, message.talker().id, message.talker().name(), message.text(), message.type())
@@ -140,14 +156,13 @@ async function onMessage(message) {
   
 bot.on('message', onMessage)
 
-async function onHeartbeat() {
-  const now = new Date();
-  // 检查当前时间是否是12点
-  if (now.getMinutes() === 0) {
-    checkAlive();
-  }
-}
-bot.on('heartbeat', onHeartbeat)
+// async function onHeartbeat() {
+//   const now = new Date();
+//   if (now.getHours()%2 === 0 && now.getMinutes() === 0) {
+//     checkAlive();
+//   }
+// }
+// bot.on('heartbeat', onHeartbeat)
 
 async function checkAlive() {
   const room = await bot.Room.find({topic: 'test bot'})
