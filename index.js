@@ -11,6 +11,7 @@ const bot = WechatyBuilder.build({
   puppetOptions: {
     uos: true  // 开启uos协议
   },
+  puppet: 'wechaty-puppet-wechat',
 })
 
 bot.start();
