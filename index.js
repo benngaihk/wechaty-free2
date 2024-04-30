@@ -33,6 +33,13 @@ function onScan(qrcode, status) {
   
 bot.on('scan', onScan)
 
+async function onRoomTopic(room, newTopic, oldTopic, changer, date) {
+  changeRoomTopic(groupId, oldTopic, newTopic);
+}
+
+bot.on('room-topic', onRoomTopic)
+
+
 async function onMessage(message) {
     
     log.info('StarterBot', message.toString())
@@ -153,6 +160,11 @@ async function onMessage(message) {
           });
         }
     } else {
+      if (message.self()) {
+        // Don't deal with message from yourself.
+        return
+      }
+      // Deal with message from anyone else
       let talkerId = message.talker().id;
       let talkerName = message.talker().name();
       if(message.type() == bot.Message.Type.Text) {
@@ -162,13 +174,13 @@ async function onMessage(message) {
             {
               if(data.type == "TXT")
               {
-                message.room().say(data.content);
+                message.say(data.content);
               }
               else if(data.type == "IMG")
               {
                 const imageFilePath = data.content;
                 const fileBox = FileBox.fromFile(imageFilePath);
-                message.room().say(fileBox);
+                message.say(fileBox);
               }
             }
           })
@@ -227,6 +239,27 @@ async function talkToAI(userId, userName, message, messageType) {
       user_name: userName,
       message: message,
       message_type: messageType,
+  })
+  .then((response) => {
+      const { code, message, data } = response.data
+      console.log('code:', code);
+      console.log('message:', message);
+      console.log('data:', data);
+      return data;
+  })
+  .catch((error) => {
+      log.info('error', error);
+      throw error;
+  });
+}
+
+async function changeRoomTopic(groupId, oldTopic, newTopic) {
+  console.log("changeRoomTopic");
+
+  return axios.post('http://localhost:9091/checkin/changeTopic', {
+    group_id: groupId,
+    old_group_name: oldTopic,
+    new_group_name: newTopic,
   })
   .then((response) => {
       const { code, message, data } = response.data
